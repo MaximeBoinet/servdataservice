@@ -1,10 +1,17 @@
-const express = require('express')
-const path = require('path')
-const PORT = process.env.PORT || 5000
+const express = require('express');
+const api = express();
 
-express()
-  .use(express.static(path.join(__dirname, 'public')))
-  .set('views', path.join(__dirname, 'views'))
-  .set('view engine', 'ejs')
-  .get('/', (req, res) => res.render('pages/index'))
-  .listen(PORT, () => console.log(`Listening on ${ PORT }`))
+require('./settings')(api);
+console.log('\n>> Settings initialized');
+//require('./models')(api);
+//console.log('>> Models initialized');
+require('./middlewares')(api);
+console.log('>> Middleware initialized');
+require('./actions')(api);
+console.log('>> Actions initialized');
+require('./routes')(api);
+console.log('>> Routes initialized');
+let date = new Date()
+api.listen(process.env.PORT || 5000);
+console.log(`(%s:%s:%s) Server started and listening on port %s`, date.getHours(), date.getMinutes(), date.getSeconds(), process.env.PORT || 5000)
+console.log(`Good Job\n`)
