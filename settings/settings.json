@@ -1,4 +1,7 @@
 {
+    "key": {
+      "api": "141ff21ff49305350dfc0017c9255329"
+    },
     "db": {
         "url": "mongodb://localhost:27017/iquarium"
     },

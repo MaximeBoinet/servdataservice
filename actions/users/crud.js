@@ -5,7 +5,7 @@ const { DATABASE_URL } = process.env;
 module.exports = (api) => {
 
     function findById(req, res, next) {
-        /*User.findById(req.params.id)
+        User.findById(req.params.id)
             .populate('Aquariums')
             .populate({
                 path: 'Fishes',
@@ -19,7 +19,7 @@ module.exports = (api) => {
                     return res.status(404).send("user.not.found");
                 }
                 return res.send(data);
-            });*/
+            });
     }
 
     function findByUsername(req, res, next) {
@@ -43,7 +43,6 @@ module.exports = (api) => {
     }
 
     function create(req, res, next) {
-      console.log("infunction")
       const client = new Client({
         connectionString: DATABASE_URL,
       });
@@ -51,7 +50,6 @@ module.exports = (api) => {
         if (err) {
           return res.status(500).send(err.stack)
         }
-        console.log("connected")
         client.query('INSERT INTO myuser(mail,password,phone,city,genre_idgenre) VALUES ($1, $2, $3, $4, $5)', [req.body.mail, req.body.password ,req.body.phone ,req.body.city, req.body.genre] , (err, resp) => {
           if (err) {
             return res.status(500).send(err.stack)

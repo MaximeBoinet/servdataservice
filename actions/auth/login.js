@@ -7,15 +7,15 @@ const { DATABASE_URL } = process.env;
 module.exports = (api) => {
 
 	return function login(req, res, next) {
-    if (!req.body.username || !req.body.password) {
+    if (!req.body.mail || !req.body.password) {
         return res.status(401).send('no.credentials');
     } else {
 			client.connect(() => {
-				client.query('INSERT INTO myuser(mail,password,phone,city,genre_idgenre VALUES ($1, $2, $3, $4))', [req.body.mail, req.body.password ,req.body.phone ,req.body.city] , (err, user) => {
+				client.query('SELECT * FROM myuser WHERE mail = $1 AND password = $2', [req.body.mail, req.body.password] , (err, user) => {
 					client.end(() => {
 						createToken(user, req, next);
 
-						return res.send(err ? err.stack : res.rows[0].message);
+						return res.send(err ? err.stack : res);
 					})
 
 
