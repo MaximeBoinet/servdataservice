@@ -18,7 +18,6 @@ module.exports = (api) => {
 						return res.send(err ? err.stack : res);
 					})
 
-
 				})
 			})
 		}
