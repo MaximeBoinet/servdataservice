@@ -56,6 +56,7 @@ module.exports = (api) => {
           if (err) {
             return res.status(500).send(err.stack)
           }
+          //return res.send(err ? err.stack : resp);
           client.end(() => {
             return res.send(err ? err.stack : resp.rows[0].message);
           })
