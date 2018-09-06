@@ -20,7 +20,7 @@ module.exports = (api) => {
       return res.status(500).send("L'appel à l'API à achoué");
     }
 
-    return res.status(200).send(JSON.stringify(body));
+    return res.status(200).send(body);
   });
   }
 
