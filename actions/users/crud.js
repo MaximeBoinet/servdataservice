@@ -52,7 +52,7 @@ module.exports = (api) => {
           return res.status(500).send(err.stack)
         }
         console.log("connected")
-        client.query('INSERT INTO myuser(mail,password,phone,city,genre_idgenre) VALUES ($1, $2, $3, $4)', [req.body.mail, req.body.password ,req.body.phone ,req.body.city] , (err, resp) => {
+        client.query('INSERT INTO myuser(mail,password,phone,city,genre_idgenre) VALUES ($1, $2, $3, $4, $5)', [req.body.mail, req.body.password ,req.body.phone ,req.body.city, req.body.genre] , (err, resp) => {
           if (err) {
             return res.status(500).send(err.stack)
           }
