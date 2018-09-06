@@ -1,6 +1,6 @@
 const redis = require("redis"),client = redis.createClient({host : 'ec2-52-204-102-201.compute-1.amazonaws.com',
 	user : 'h',
-	uort : 24999,
+	port : 24999,
 	password : 'pb939c4ea18ea26d76176758a142b9e1a3b6936b1ba018647ddf015d56d5f0e90',
 	uri : 'redis://h:pb939c4ea18ea26d76176758a142b9e1a3b6936b1ba018647ddf015d56d5f0e90@ec2-52-204-102-201.compute-1.amazonaws.com:24999'});
 
