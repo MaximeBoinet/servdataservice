@@ -1,55 +1,44 @@
 const sha1 = require('sha1');
 const jwt = require('jsonwebtoken');
+const { Client } = require('pg')
+const PORT = process.env.PORT || 5000;
+const { DATABASE_URL } = process.env;
 
 module.exports = (api) => {
-	const User = api.models.User;
-	const Token = api.models.Token;
 
 	return function login(req, res, next) {
-        if (!req.body.username || !req.body.password) {
-            return res.status(401).send('no.credentials');
-        } else {
-            User.findOne({
-                    username: req.body.username},
-                (err, user) => {
-                    if (err) {
-                        return res.status(500).send(err);
-                    }
+    if (!req.body.username || !req.body.password) {
+        return res.status(401).send('no.credentials');
+    } else {
+			client.connect(() => {
+				client.query('INSERT INTO myuser(mail,password,phone,city,genre_idgenre VALUES ($1, $2, $3, $4))', [req.body.mail, req.body.password ,req.body.phone ,req.body.city] , (err, user) => {
+					client.end(() => {
+						createToken(user, req, next);
 
-                    if (!user) {
-                        return res.status(404).send('user.not.found');
-                    }
+						return res.send(err ? err.stack : res.rows[0].message);
+					})
 
-                    if(user.password != sha1(req.body.password)){
-                        return res.status(403).send('invalid.credentials');
-                    }
 
-                    createToken(user, res, next);
-                });
+				})
+			})
 		}
-
 	};
 
 	function createToken(user, res, next) {
-		var token = new Token();
-		token.userId = user.id.toString();
-		token.save((err, token) => {
-			if (err) {
-				return res.status(500).send(err);
-			}
-
-			jwt.sign({
-					exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 100 * 1000), //100 days
-					tokenId: token.id.toString()
-				},
-				api.settings.security.salt, {}, (err, encryptedToken) => {
-					if (err) {
-						return res.status(500).send(err);
-					}
-					console.log(Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 100 * 1000));
-					return res.send(encryptedToken);
+		let key = sha1(Date.now());
+		api.middlewares.cache.addToken(key, user.id.toString());
+		jwt.sign({
+				exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 100 * 1000), //100 days
+				tokenId: key
+			},
+			api.settings.security.salt, {}, (err, encryptedToken) => {
+				if (err) {
+					return res.status(500).send(err);
 				}
-			);
-		});
+				console.log(Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 100 * 1000));
+
+				return res.send(encryptedToken);
+			}
+		);
 	}
 };
