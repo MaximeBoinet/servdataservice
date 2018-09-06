@@ -1,8 +1,12 @@
-const redis = require("redis"),client = redis.createClient({host : 'ec2-52-204-102-201.compute-1.amazonaws.com',
-	user : 'h',
-	port : 24999,
-	password : 'pb939c4ea18ea26d76176758a142b9e1a3b6936b1ba018647ddf015d56d5f0e90',
-	uri : 'redis://h:pb939c4ea18ea26d76176758a142b9e1a3b6936b1ba018647ddf015d56d5f0e90@ec2-52-204-102-201.compute-1.amazonaws.com:24999'});
+var client;
+if (process.env.REDISTOGO_URL) {
+	var rtg   = require("url").parse(process.env.REDISTOGO_URL);
+	client = require("redis").createClient(rtg.port, rtg.hostname);
+
+	redis.auth(rtg.auth.split(":")[1]);
+} else {
+	client = require("redis").createClient();
+}
 
 module.exports = (api) => {
 	function get(req, res, next) {
