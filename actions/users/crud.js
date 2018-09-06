@@ -58,7 +58,7 @@ module.exports = (api) => {
           }
           //return res.send(err ? err.stack : resp);
           client.end(() => {
-            return res.send(err ? err.stack : resp.rows[0].message);
+            return res.send(err ? err.stack : resp);
           })
         })
       });
