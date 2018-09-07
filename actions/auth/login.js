@@ -20,7 +20,7 @@ module.exports = (api) => {
 						if (!user.rows[0]) {
 								return res.status(404).send('user.not.found');
 						}
-						createToken(user.rows[0], req, next);
+						createToken(user.rows[0], res, next);
 					})
 
 				})
