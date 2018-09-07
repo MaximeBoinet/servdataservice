@@ -20,7 +20,7 @@ module.exports = (api) => {
 								return res.status(404).send('user.not.found');
 						}
 						console.log(user)
-						createToken(user, req, next);
+						createToken(user.row[0], req, next);
 
 						return res.send(err ? err.stack : res.row);
 					})
