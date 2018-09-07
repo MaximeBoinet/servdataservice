@@ -14,7 +14,7 @@ module.exports = (api) => {
         return res.status(401).send('no.credentials');
     } else {
 			client.connect(() => {
-				client.query('SELECT * FROM myuser WHERE mail = $1 AND password = $2', [req.body.mail, req.body.password] , (err, user) => {
+				client.query("SELECT * FROM myuser WHERE mail = '$1' AND password = '$2'", [req.body.mail, req.body.password] , (err, user) => {
 					client.end(() => {
 						console.log(user)
 						if (!user.row[0]) {
