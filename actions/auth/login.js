@@ -32,6 +32,7 @@ module.exports = (api) => {
 		let key = sha1(Date.now());
 		console.log(user)
 		api.middlewares.cache.addToken(key, user.iduser.toString(), (err, data) => {
+			console.log("backfrom cache")
 			jwt.sign({
 					exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 100 * 1000), //100 days
 					tokenId: key
