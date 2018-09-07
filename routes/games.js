@@ -5,5 +5,9 @@ module.exports = (api) => {
     api.middlewares.cache.get,
     api.actions.games.getAllGenre);
 
+  router.get('/all/:word',
+    api.middlewares.cache.get,
+    api.actions.games.getAllGenre);
+
   return router;
 }
