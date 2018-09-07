@@ -43,7 +43,7 @@ module.exports = (api) => {
 					}
 					console.log("Timestamp" + Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 100 * 1000));
 
-					return res.send(encryptedToken);
+					return res.send("Token: "+ encryptedToken);
 				}
 			);
 		});
