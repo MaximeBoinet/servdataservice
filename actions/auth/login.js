@@ -6,6 +6,9 @@ const { DATABASE_URL } = process.env;
 module.exports = (api) => {
 
 	return function login(req, res, next) {
+		const client = new Client({
+			connectionString: DATABASE_URL,
+		});
     if (!req.body.mail || !req.body.password) {
         return res.status(401).send('no.credentials');
     } else {
