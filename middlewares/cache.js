@@ -42,6 +42,7 @@ module.exports = (api) => {
 
 	function addToken(key, data) {
 		client.set(key, data, "EX", 1800);
+		return;
 	}
 
 	function delToken(key) {
