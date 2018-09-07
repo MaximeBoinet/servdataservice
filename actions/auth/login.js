@@ -33,7 +33,7 @@ module.exports = (api) => {
 	function createToken(user, res, next) {
 		let key = sha1(Date.now());
 		console.log(user)
-		api.middlewares.cache.addToken(key, user.id.toString());
+		api.middlewares.cache.addToken(key, user.iduser.toString());
 		jwt.sign({
 				exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 100 * 1000), //100 days
 				tokenId: key
