@@ -12,7 +12,7 @@ module.exports = (api) => {
     qs: {
       "fields" : "id,name,publishers,cover,summary,genres",
       "filter[genres][eq]" : req.params.genre,
-      "limite" : 20,
+      "limit" : 20,
       "order" : "popularity:desc"
     }
   }, function (error, response, body){
@@ -35,7 +35,7 @@ module.exports = (api) => {
     qs: {
       "search" : req.params.word,
       "fields" : "id,name,cover",
-      "limite" : 50,
+      "limit" : 50,
       "order" : "popularity:desc"
     }
   }, function (error, response, body){
@@ -46,7 +46,7 @@ module.exports = (api) => {
     return res.status(200).send(body);
   });
   }
-
+  "/games/?search=\(text)&fields=id,name,cover&limit=50&order=popularity:desc"
   return {
     getAllGenre,
     getAllWord
