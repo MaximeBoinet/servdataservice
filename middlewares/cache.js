@@ -12,6 +12,7 @@ module.exports = (api) => {
 	function get(req, res, next) {
 		client.get(req.originalUrl, function(err, reply) {
 		if (reply) {
+			console.log("cache sended")
 			return res.send(reply);
 		}
     	next()
@@ -40,7 +41,7 @@ module.exports = (api) => {
 	}
 
 	function addToken(key, data) {
-		client.set(key, data);
+		client.set(key, data, "EX", 1800);
 	}
 
 	function delToken(key) {

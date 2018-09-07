@@ -1,7 +1,6 @@
 const sha1 = require('sha1');
 const jwt = require('jsonwebtoken');
 const { Client } = require('pg')
-const PORT = process.env.PORT || 5000;
 const { DATABASE_URL } = process.env;
 
 module.exports = (api) => {
@@ -13,9 +12,12 @@ module.exports = (api) => {
 			client.connect(() => {
 				client.query('SELECT * FROM myuser WHERE mail = $1 AND password = $2', [req.body.mail, req.body.password] , (err, user) => {
 					client.end(() => {
+						if (!user) {
+								return res.status(404).send('user.not.found');
+						}
 						createToken(user, req, next);
 
-						return res.send(err ? err.stack : res);
+						return res.send(err ? err.stack : res.row);
 					})
 
 				})

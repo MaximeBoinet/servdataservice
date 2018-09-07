@@ -1,11 +1,11 @@
 const router = require('express').Router();
 
 module.exports = (api) => {
-	/*router.get('/:id',
-        api.middlewares.ensureAuthentificated,
+	router.get('/:id',
+    api.middlewares.ensureAuthentificated.verifyAuth,
 		api.actions.users.findById);
 
-	router.get('/username/:username',
+	/*router.get('/username/:username',
         api.middlewares.ensureAuthentificated,
 		api.actions.users.findByUsername);*/
 

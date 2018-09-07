@@ -5,21 +5,23 @@ const { DATABASE_URL } = process.env;
 module.exports = (api) => {
 
     function findById(req, res, next) {
-        User.findById(req.params.id)
-            .populate('Aquariums')
-            .populate({
-                path: 'Fishes',
-                populate: { path: 'Species' }
-            })
-            .exec((err, data) => {
-                if (err) {
-                    return res.status(500).send(err);
-                }
-                if (!data) {
-                    return res.status(404).send("user.not.found");
-                }
-                return res.send(data);
-            });
+      const client = new Client({
+        connectionString: DATABASE_URL,
+      });
+      client.connect((err) => {
+        if (err) {
+          return res.status(500).send(err.stack)
+        }
+        client.query('SELECT * FROM myuser WHERE mail = $1 AND password = $2', [req.body.mail, req.body.password] , (err, resp) => {
+          if (err) {
+            return res.status(500).send(err.stack)
+          }
+          //return res.send(err ? err.stack : resp);
+          client.end(() => {
+            return res.send(err ? err.stack : resp[row]);
+          })
+        })
+      });
     }
 
     function findByUsername(req, res, next) {
@@ -107,10 +109,7 @@ module.exports = (api) => {
     }
 
     return {
-        //findById,
-        //findByUsername,
+        findById,
         create
-        //update,
-        //remove
     };
 }
