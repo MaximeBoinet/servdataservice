@@ -40,10 +40,11 @@ module.exports = (api) => {
 		});
 	}
 
-	function addToken(key, data) {
+	function addToken(key, data, callback) {
 		console.log('toadd')
 		client.set(key, data, "EX", 1800);
 		console.log('added')
+		callback()
 	}
 
 	function delToken(key) {
