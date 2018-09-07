@@ -26,7 +26,7 @@ module.exports = (api) => {
 					})
 
 				})
-			})bb
+			})
 		}
 	};
 
