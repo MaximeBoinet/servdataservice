@@ -42,11 +42,12 @@ module.exports = (api) => {
   	if (error) {
       return res.status(500).send("L'appel à l'API à achoué");
     }
+    console.log(req.originalUrl)
     api.middlewares.cache.set(req.originalUrl, body);
     return res.status(200).send(body);
   });
   }
-  "/games/?search=\(text)&fields=id,name,cover&limit=50&order=popularity:desc"
+
   return {
     getAllGenre,
     getAllWord
