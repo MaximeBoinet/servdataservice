@@ -42,7 +42,7 @@ module.exports = (api) => {
 				if (err) {
 					return res.status(500).send(err);
 				}
-				console.log(Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 100 * 1000));
+				console.log("Timestamp" + Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 100 * 1000));
 
 				return res.send(encryptedToken);
 			}
