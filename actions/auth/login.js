@@ -33,19 +33,20 @@ module.exports = (api) => {
 	function createToken(user, res, next) {
 		let key = sha1(Date.now());
 		console.log(user)
-		api.middlewares.cache.addToken(key, user.iduser.toString());
-		jwt.sign({
-				exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 100 * 1000), //100 days
-				tokenId: key
-			},
-			api.settings.security.salt, {}, (err, encryptedToken) => {
-				if (err) {
-					return res.status(500).send(err);
-				}
-				console.log("Timestamp" + Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 100 * 1000));
+		api.middlewares.cache.addToken(key, user.iduser.toString(), () => {
+			jwt.sign({
+					exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 100 * 1000), //100 days
+					tokenId: key
+				},
+				api.settings.security.salt, {}, (err, encryptedToken) => {
+					if (err) {
+						return res.status(500).send(err);
+					}
+					console.log("Timestamp" + Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 100 * 1000));
 
-				return res.send(encryptedToken);
-			}
-		);
+					return res.send(encryptedToken);
+				}
+			);
+		});
 	}
 };
