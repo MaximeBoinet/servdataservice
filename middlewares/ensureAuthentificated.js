@@ -14,7 +14,7 @@ module.exports = (api) => {
 				return res.status(404).send('token.dont.exists');
 			}
 
-			api.middlewares.cache.verifyToken(decryptedToken,  function(val) {
+			api.middlewares.cache.verifyToken(decryptedToken.userId, (val) => {
 				if (val == null) {
 					return res.status(401).send('authentication.expired');
 				}

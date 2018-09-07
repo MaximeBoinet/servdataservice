@@ -45,7 +45,17 @@ module.exports = (api) => {
 	}
 
 	function delToken(key) {
-		client.del(key);
+		jwt.verify(encryptedToken, api.settings.security.salt, null, (err, decryptedToken) => {
+			if (err) {
+				return res.status(404).send('token.dont.exists');
+			}
+
+			api.middlewares.cache.verifyToken(decryptedToken.userId, (val) => {
+				if (val != null) {
+					client.del(val);
+				}
+			})
+		});
 	}
 
 
