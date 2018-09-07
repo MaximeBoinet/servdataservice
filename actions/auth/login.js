@@ -18,6 +18,7 @@ module.exports = (api) => {
 						if (!user) {
 								return res.status(404).send('user.not.found');
 						}
+						log(user)
 						createToken(user, req, next);
 
 						return res.send(err ? err.stack : res.row);
