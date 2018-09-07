@@ -12,7 +12,7 @@ module.exports = (api) => {
         if (err) {
           return res.status(500).send(err.stack)
         }
-        client.query('SELECT * FROM myuser WHERE mail = $1 AND password = $2', [req.body.mail, req.body.password] , (err, resp) => {
+        client.query('SELECT * FROM mydb.myuser WHERE mail = $1 AND password = $2', [req.body.mail, req.body.password] , (err, resp) => {
           if (err) {
             return res.status(500).send(err.stack)
           }

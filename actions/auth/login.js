@@ -6,6 +6,7 @@ const { DATABASE_URL } = process.env;
 module.exports = (api) => {
 
 	return function login(req, res, next) {
+		console.log("DATABASE URL" + JSON.stringify(DATABASE_URL))
 		const client = new Client({
 			connectionString: DATABASE_URL,
 		});
@@ -13,12 +14,12 @@ module.exports = (api) => {
         return res.status(401).send('no.credentials');
     } else {
 			client.connect(() => {
-				client.query('SELECT * FROM myuser WHERE mail = $1 AND password = $2', [req.body.mail, req.body.password] , (err, user) => {
+				client.query('SELECT * FROM mydb.myuser WHERE mail = $1 AND password = $2', [req.body.mail, req.body.password] , (err, user) => {
 					client.end(() => {
 						if (!user) {
 								return res.status(404).send('user.not.found');
 						}
-						log(user)
+						console.log(user)
 						createToken(user, req, next);
 
 						return res.send(err ? err.stack : res.row);
