@@ -17,7 +17,7 @@ module.exports = (api) => {
 				client.query("SELECT * FROM myuser WHERE mail = $1::text AND password = $2::text", [req.body.mail, req.body.password] , (err, user) => {
 					client.end(() => {
 						console.log(user)
-						if (!user.row[0]) {
+						if (!user.rows[0]) {
 								return res.status(404).send('user.not.found');
 						}
 						console.log(user)
