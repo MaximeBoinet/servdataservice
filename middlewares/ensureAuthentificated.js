@@ -13,14 +13,15 @@ module.exports = (api) => {
 			if (err) {
 				return res.status(404).send('token.dont.exists');
 			}
-
-			api.middlewares.cache.verifyToken(decryptedToken.userId, (val) => {
-				if (val == null) {
+			console.log(decryptedToken)
+			api.middlewares.cache.verifyToken(decryptedToken.tokenId, (val) => {
+				console.log("val : " +val);
+				if (!val) {
 					return res.status(401).send('authentication.expired');
 				}
 
 				req.userId = val;
-
+				console.log("Userid = " + val)
 				return next();
 			})
 

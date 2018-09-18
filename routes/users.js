@@ -5,19 +5,27 @@ module.exports = (api) => {
     api.middlewares.ensureAuthentificated.verifyAuth,
 		api.actions.users.findById);
 
-	/*router.get('/username/:username',
-        api.middlewares.ensureAuthentificated,
-		api.actions.users.findByUsername);*/
+	router.get('/games/lendable',
+    api.middlewares.ensureAuthentificated.verifyAuth,
+		api.actions.users.getMyGames);
+
+	router.get('/games/borrowed',
+    api.middlewares.ensureAuthentificated.verifyAuth,
+		api.actions.users.getMyBorrowedGame);
 
 	router.post('/',
 		api.middlewares.bodyParser.json(),
-		//api.middlewares.cache.clean('User'),
 		api.actions.users.create);
 
-	/*router.put('/:id/password',
-    api.middlewares.ensureAuthentificated,
+	router.put('/:id/password',
+    api.middlewares.ensureAuthentificated.verifyAuth,
 		api.middlewares.bodyParser.json(),
-		api.actions.users.update);*/
+		api.actions.users.updatePassword);
+
+	router.put('/',
+    api.middlewares.ensureAuthentificated.verifyAuth,
+		api.middlewares.bodyParser.json(),
+		api.actions.users.update);
 
 	return router;
 }

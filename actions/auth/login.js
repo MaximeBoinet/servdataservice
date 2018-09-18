@@ -1,38 +1,35 @@
 const sha1 = require('sha1');
 const jwt = require('jsonwebtoken');
-const { Client } = require('pg')
-const { DATABASE_URL } = process.env;
+const Promise = require('promise');
 
 module.exports = (api) => {
 
 	return function login(req, res, next) {
-		console.log("DATABASE URL" + JSON.stringify(DATABASE_URL))
-		const client = new Client({
-			connectionString: DATABASE_URL,
-		});
     if (!req.body.mail || !req.body.password) {
         return res.status(401).send('no.credentials');
     } else {
-			client.connect(() => {
-				client.query("SELECT * FROM myuser WHERE mail = $1::text AND password = $2::text", [req.body.mail, req.body.password] , (err, user) => {
-					client.end(() => {
-						console.log(user)
-						if (!user.rows[0]) {
-								return res.status(404).send('user.not.found');
-						}
-						createToken(user.rows[0], res, next);
-					})
+			api.middlewares.pool.query("SELECT * FROM myuser WHERE mail = $1::text AND password = $2::text", [req.body.mail, req.body.password])
+        .then(resp => {
+					if (!resp.rows) {
+						res.status(403).send('wrong.credential')
+					}
+					console.log(resp.rows[0]);
 
+					createToken(resp.rows[0], req, res, next)
 				})
-			})
+        .catch(e => setImmediate(() => { throw e }))
 		}
 	};
 
-	function createToken(user, res, next) {
+	function createToken(user, req, res, next) {
 		let key = sha1(Date.now());
-		console.log(user)
+		console.log(user.iduser.toString());
 		api.middlewares.cache.addToken(key, user.iduser.toString(), (err, data) => {
-			console.log("backfrom cache")
+			if (err) {
+				console.log("err : " + err);
+			}
+			console.log("data : " + data)
+			console.log(key);
 			jwt.sign({
 					exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 100 * 1000), //100 days
 					tokenId: key
@@ -41,9 +38,8 @@ module.exports = (api) => {
 					if (err) {
 						return res.status(500).send(err);
 					}
-					console.log("Timestamp" + Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 100 * 1000));
-
-					return res.send("Token: "+ encryptedToken);
+					req.userId = user.iduser;
+					return res.send(encryptedToken);
 				}
 			);
 		});

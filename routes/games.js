@@ -1,7 +1,7 @@
 const router = require('express').Router();
 
 module.exports = (api) => {
-  router.get('/all/:genre',
+  router.get('/allgenre/:genre',
     api.middlewares.cache.get,
     api.actions.games.getAllGenre);
 

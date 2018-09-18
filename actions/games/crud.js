@@ -1,6 +1,7 @@
 const request = require('request');
 
 module.exports = (api) => {
+  const baseURL = "https://api-endpoint.igdb.com/games/"
   function getAllGenre (req, res, next) {
     request({
     url: "https://api-endpoint.igdb.com/games/",
@@ -15,7 +16,7 @@ module.exports = (api) => {
       "limit" : 20,
       "order" : "popularity:desc"
     }
-  }, function (error, response, body){
+  }, (error, response, body) => {
   	if (error) {
       return res.status(500).send("L'appel à l'API à achoué");
     }
@@ -38,7 +39,7 @@ module.exports = (api) => {
       "limit" : 50,
       "order" : "popularity:desc"
     }
-  }, function (error, response, body){
+  }, (error, response, body) => {
   	if (error) {
       return res.status(500).send("L'appel à l'API à achoué");
     }
@@ -48,8 +49,38 @@ module.exports = (api) => {
   });
   }
 
+  function getLendedGamesFromUser (req, res, next) {
+    if (!req.userId) {
+        return res.status(401).send('not logged in');
+    }
+    api.middlewares.pool.query('SELECT * FROM games WHERE user_iduser = $1 AND lended = 1', [req.params.id])
+      .then(resp => res.send(resp.rows))
+      .catch(e => setImmediate(() => { throw e }))
+  }
+
+  function getGamesFromUser (req, res, next) {
+    if (!req.userId) {
+        return res.status(401).send('not logged in');
+    }
+    api.middlewares.pool.query('SELECT * FROM games WHERE user_iduser = $1', [req.params.id])
+      .then(resp => res.send(resp.rows))
+      .catch(e => setImmediate(() => { throw e }))
+  }
+
+  function setLend(req, res, next) {
+    if (req.userId == undefined) {
+        return res.status(401).send('not logged in');
+    }
+    api.middlewares.pool.query('UPDATE games SET lended = 1 WHERE idgame = $1 RETURNING *', [req.params.id])
+      .then(resp => res.send(resp.rows))
+      .catch(e => setImmediate(() => { throw e }))
+  }
+
   return {
     getAllGenre,
-    getAllWord
+    getAllWord,
+    getLendedGamesFromUser,
+    getGamesFromUser,
+    setLend
   }
 }

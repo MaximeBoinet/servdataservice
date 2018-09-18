@@ -7,7 +7,7 @@ if (process.env.REDISTOGO_URL) {
 } else {
 	client = require("redis").createClient();
 }
-
+const jwt = require('jsonwebtoken');
 module.exports = (api) => {
 	function get(req, res, next) {
 		client.get(req.originalUrl, function(err, reply) {
@@ -20,7 +20,7 @@ module.exports = (api) => {
 	}
 
 	function set(key, data) {
-		client.set(key, data);
+		client.set(key, data, "EX", 60 * 60);
 	}
 
 	function clean(key) {
@@ -31,32 +31,32 @@ module.exports = (api) => {
 		}
 	}
 
-	function verifyToken(key) {
-		client.get(key, function(err, reply) {
+	function verifyToken(key, callback) {
+		client.get(key, (err, reply) => {
 		if (reply) {
-			return reply;
+			return callback(reply);
 		}
-    	return null;
+    	return callback();
 		});
 	}
 
 	function addToken(key, data, callback) {
-		console.log('toadd')
-		client.set(key, data, "EX", 1800);
-		console.log('added')
-		callback()
+		client.set(key, data, "EX", 60 * 60 , (err, reply) => {
+			return callback(err, reply)
+		});
 	}
 
-	function delToken(key) {
-		jwt.verify(encryptedToken, api.settings.security.salt, null, (err, decryptedToken) => {
+	function delToken(req, id, callback) {
+		jwt.verify(req.headers.authorization, api.settings.security.salt, null, (err, decryptedToken) => {
 			if (err) {
 				return res.status(404).send('token.dont.exists');
 			}
-
-			api.middlewares.cache.verifyToken(decryptedToken.userId, (val) => {
-				if (val != null) {
-					client.del(val);
+			api.middlewares.cache.verifyToken(decryptedToken.tokenId, (val) => {
+				if (val) {
+					client.del(decryptedToken.tokenId);
 				}
+
+				return callback()
 			})
 		});
 	}

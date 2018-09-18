@@ -4,5 +4,6 @@ module.exports = (api) => {
 		bodyParser: require('body-parser'),
 		cache: require('./cache')(api),
 		ensureAuthentificated: require('./ensureAuthentificated')(api),
+		pool: require('./pool')(api),
 	};
 };

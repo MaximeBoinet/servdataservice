@@ -1,115 +1,49 @@
 const sha1 = require('sha1');
-const { Client } = require('pg');
-const { DATABASE_URL } = process.env;
 
 module.exports = (api) => {
 
     function findById(req, res, next) {
-      const client = new Client({
-        connectionString: DATABASE_URL,
-      });
-      client.connect((err) => {
-        if (err) {
-          return res.status(500).send(err.stack)
-        }
-        client.query('SELECT * FROM mydb.myuser WHERE mail = $1 AND password = $2', [req.body.mail, req.body.password] , (err, resp) => {
-          if (err) {
-            return res.status(500).send(err.stack)
-          }
-          //return res.send(err ? err.stack : resp);
-          client.end(() => {
-            return res.send(err ? err.stack : resp[row]);
-          })
-        })
-      });
-    }
-
-    function findByUsername(req, res, next) {
-        /*User.findOne({
-                username: req.params.username
-            })
-            .populate('Aquariums')
-            .populate({
-                path: 'Fishes',
-                populate: { path: 'Species' }
-            })
-            .exec((err, data) => {
-                if (err) {
-                    return res.status(500).send();
-                }
-                if (!data || data.length == 0) {
-                    return res.status(404).send("user.not.found");
-                }
-                return res.send(data);
-            })*/
+      api.middlewares.pool.query('SELECT * FROM myuser WHERE iduser = $1', [req.params.userid])
+        .then(resp => res.send(resp.rows[0]))
+        .catch(e => setImmediate(() => { throw e }))
     }
 
     function create(req, res, next) {
-      const client = new Client({
-        connectionString: DATABASE_URL,
-      });
-      client.connect((err) => {
-        if (err) {
-          return res.status(500).send(err.stack)
-        }
-        client.query('INSERT INTO myuser(mail,password,phone,city,genre_idgenre) VALUES ($1, $2, $3, $4, $5)', [req.body.mail, req.body.password ,req.body.phone ,req.body.city, req.body.genre] , (err, resp) => {
-          if (err) {
-            return res.status(500).send(err.stack)
-          }
-          //return res.send(err ? err.stack : resp);
-          client.end(() => {
-            return res.send(err ? err.stack : resp);
-          })
-        })
-      });
+      api.middlewares.pool.query('INSERT INTO myuser(mail,password,phone,city,genre_idgenre) VALUES ($1, $2, $3, $4, $5) RETURNING *', [req.body.mail, req.body.password ,req.body.phone ,req.body.city, req.body.genre])
+        .then(resp => res.send(resp.rows[0]))
+        .catch(e => setImmediate(() => { throw e }))
     }
 
     function update(req, res, next) {
-        /*if (req.userId != req.params.id) {
-            return res.status(401).send('cant.modify.another.user.account');
-        }
-        if (req.body.password) {
-            req.body.password = sha1(req.body.password)
-        }
-        User.findByIdAndUpdate(req.params.id, req.body, {
-            new: true
-        }, (err, data) => {
-            if (err) {
-                return res.status(500).send(err);
-            }
-
-            if (!data) {
-                return res.status(404).send("user.not.found");
-            }
-            return res.send(data);
-        });*/
+      api.middlewares.pool.query('UPDATE myuser SET mail = $1, phone = $2, city = $3, genre_idgenre = $4 WHERE iduser = $5 RETURNING *', [req.body.mail, req.body.phone ,req.body.city, req.body.genre, req.userId])
+        .then(resp => res.send(resp.rows[0]))
+        .catch(e => setImmediate(() => { throw e }))
     }
 
-    function remove(req, res, next) {
-        /*if (req.userId != req.params.id) {
-            return res.status(401).send('cant.delete.another.user.account');
-        }
-        User.findByIdAndRemove(req.para, (err, data) => {
-            if (err) {
-                return res.status(500).send(err);
-            }
-            if (!data) {
-                return res.status(404).send('user.not.found');
-            }
+    function getMyGames(req, res, next) {
+      api.middlewares.pool.query('SELECT * FROM games WHERE user_iduser = $1', [req.userId])
+        .then(resp => res.send(resp.rows))
+        .catch(e => setImmediate(() => { throw e }))
+    }
 
-            if(data.Fishes !== []){
+    function getMyBorrowedGame(req, res, next) {
+      api.middlewares.pool.query('SELECT idgame,idigdb,name,description,urlcover,publisher,lended,user_iduser FROM games AS g, user_has_game AS u WHERE u.user_iduser = $1 AND g.idgame = u.user_iduser', [req.userId])
+        .then(resp => res.send(resp.rows))
+        .catch(e => setImmediate(() => { throw e }))
+    }
 
-            }
-
-            if(data.Aquariums !== []){
-
-            }
-            return res.send(data);
-        });*/
+    function updatePassword(req, res, next) {
+      api.middlewares.pool.query('UPDATE myuser SET password = $1 WHERE iduser = $2 RETURNING *', [req.body.password, req.userId])
+        .then(resp => res.send(resp.rows[0]))
+        .catch(e => setImmediate(() => { throw e }))
     }
 
     return {
         findById,
-        create
+        create,
+        update,
+        getMyGames,
+        getMyBorrowedGame,
+        updatePassword
     };
 }
