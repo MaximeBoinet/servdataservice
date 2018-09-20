@@ -8,6 +8,12 @@ module.exports = (api) => {
         .catch(e => setImmediate(() => { throw e }))
     }
 
+    function getConnected(req, res, next) {
+      api.middlewares.pool.query('SELECT * FROM myuser WHERE iduser = $1', [req.userId])
+        .then(resp => res.send(resp.rows[0]))
+        .catch(e => setImmediate(() => { throw e }))
+    }
+
     function create(req, res, next) {
       api.middlewares.pool.query('INSERT INTO myuser(mail,password,phone,city,genre_idgenre) VALUES ($1, $2, $3, $4, $5) RETURNING *', [req.body.mail, req.body.password ,req.body.phone ,req.body.city, req.body.genre])
         .then(resp => res.send(resp.rows[0]))
@@ -44,6 +50,7 @@ module.exports = (api) => {
         update,
         getMyGames,
         getMyBorrowedGame,
-        updatePassword
+        updatePassword,
+        getConnected
     };
 }

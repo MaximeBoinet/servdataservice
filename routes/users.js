@@ -5,6 +5,10 @@ module.exports = (api) => {
     api.middlewares.ensureAuthentificated.verifyAuth,
 		api.actions.users.findById);
 
+		router.get('/',
+	    api.middlewares.ensureAuthentificated.verifyAuth,
+			api.actions.users.getConnected);
+
 	router.get('/games/lendable',
     api.middlewares.ensureAuthentificated.verifyAuth,
 		api.actions.users.getMyGames);
