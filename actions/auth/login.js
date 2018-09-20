@@ -1,6 +1,10 @@
 const sha1 = require('sha1');
 const jwt = require('jsonwebtoken');
 const Promise = require('promise');
+const http = require('http');
+const { Client } = require('pg');
+const PORT = process.env.PORT || 5000;
+const { DATABASE_URL } = process.env;
 
 module.exports = (api) => {
 
@@ -8,7 +12,11 @@ module.exports = (api) => {
     if (!req.body.mail || !req.body.password) {
         return res.status(401).send('no.credentials');
     } else {
-			api.middlewares.pool.query("SELECT * FROM myuser WHERE mail = $1::text AND password = $2::text", [req.body.mail, req.body.password])
+			const client = new Client({
+	      connectionString: DATABASE_URL,
+	    });
+	    client.connect()
+				.then(() => client.query("SELECT * FROM myuser WHERE mail = $1::text AND password = $2::text", [req.body.mail, req.body.password]))
         .then(resp => {
 					if (!resp.rows) {
 						res.status(403).send('wrong.credential')
@@ -17,7 +25,8 @@ module.exports = (api) => {
 
 					createToken(resp.rows[0], req, res, next)
 				})
-        .catch(e => setImmediate(() => { throw e }))
+        .catch(e => res.send(e))
+				.then(() => client.end())
 		}
 	};
 
