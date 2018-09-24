@@ -105,7 +105,7 @@ module.exports = (api) => {
     headers : {
       "user-key" : api.settings.key.api,
       "Accept" : 'application/json'
-    }
+    },
     qs: {
       "fields" : "id,name,publishers,cover,summary,genres"
     }
