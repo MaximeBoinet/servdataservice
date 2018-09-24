@@ -28,11 +28,9 @@ module.exports = (api) => {
     }
 
     function create(req, res, next) {
-      console.log('ploiut');
       const client = new Client({
         connectionString: DATABASE_URL,
       });
-      console.log("2");
       client.connect()
         .then(() => client.query('INSERT INTO myuser(mail,password,phone,city,genre_idgenre) VALUES ($1, $2, $3, $4, $5) RETURNING *', [req.body.mail, req.body.password ,req.body.phone ,req.body.city, req.body.genre]))
         .then(resp => res.send(resp.rows[0]))

@@ -86,11 +86,24 @@ module.exports = (api) => {
       .then(() => client.end())
   }
 
+  function createGame(req, res, next) {
+    const client = new Client({
+      connectionString: DATABASE_URL,
+    });
+    client.connect()
+      .then(() => client.query('INSERT INTO games(idigdb, name, description, urlcover, publisher, lended, user_iduser) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *', [req.body.idapi, req.body.name, req.body.description, req.body.urlcover, req.body.publisher, req.body.lended, req.userId]))
+      .then(resp => res.send(resp.rows[0]))
+      .catch(e => res.send(e))
+      .then(() => client.end())
+
+  }
+
   return {
     getAllGenre,
     getAllWord,
     getLendedGamesFromUser,
     getGamesFromUser,
-    setLend
+    setLend,
+    createGame
   }
 }

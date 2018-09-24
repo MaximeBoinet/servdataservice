@@ -11,5 +11,21 @@ module.exports = (api) => {
     api.middlewares.cache.get,
     api.actions.games.getAllWord);
 
+  router.get('/:id',
+    api.middlewares.ensureAuthenticated.verifyAuth,
+    api.actions.games.getGamesFromUser)
+
+  router.get('/lended/:id',
+    api.middlewares.ensureAuthenticated.verifyAuth,
+    api.actions.games.getLendedGamesFromUser)
+
+  router.put('/lend/:id',
+    api.middlewares.ensureAuthenticated.verifyAuth,
+    api.actions.games.setLend);
+
+  router.post('/',
+    api.middlewares.ensureAuthenticated.verifyAuth,
+    api.actions.games.createGame);
+
   return router;
 }
