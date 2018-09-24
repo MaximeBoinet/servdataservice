@@ -106,6 +106,9 @@ module.exports = (api) => {
       "user-key" : api.settings.key.api,
       "Accept" : 'application/json'
     }
+    qs: {
+      "fields" : "id,name,publishers,cover,summary,genres"
+    }
   }, (error, response, body) => {
   	if (error) {
       return res.status(500).send("L'appel à l'API à achoué");
