@@ -99,14 +99,20 @@ module.exports = (api) => {
   }
 
   function getGameById(req, res, next) {
-    const client = new Client({
-      connectionString: DATABASE_URL,
-    });
-    client.connect()
-      .then(() => client.query('SELECT * FROM games WHERE idgame = $1', [req.params.gameid]))
-      .then((resp) => res.send(resp.rows[0]))
-      .catch((e) => res.send(e))
-      .then(() => client.end())
+    request({
+    url: baseURL+"/games/"+req.gameid,
+    method: "GET",
+    headers : {
+      "user-key" : api.settings.key.api,
+      "Accept" : 'application/json'
+    }
+  }, (error, response, body) => {
+  	if (error) {
+      return res.status(500).send("L'appel à l'API à achoué");
+    }
+    api.middlewares.cache.set(req.originalUrl, body);
+    return res.status(200).send(body);
+  });
   }
 
   return {
