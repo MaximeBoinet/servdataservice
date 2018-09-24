@@ -14,7 +14,7 @@ module.exports = (api) => {
     });
     client.connect()
       .then(() => client.query('SELECT * FROM genre'))
-      .then(resp => res.send(resp.rows[0]))
+      .then(resp => res.send(resp.rows))
       .catch((e) => res.send(e))
       .then(() => client.end())
   }
