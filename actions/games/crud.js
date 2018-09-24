@@ -100,7 +100,7 @@ module.exports = (api) => {
 
   function getGameById(req, res, next) {
     request({
-    url: baseURL+req.gameid,
+    url: baseURL+req.params.gameid,
     method: "GET",
     headers : {
       "user-key" : api.settings.key.api,
@@ -113,7 +113,6 @@ module.exports = (api) => {
   	if (error) {
       return res.status(500).send("L'appel à l'API à achoué");
     }
-    api.middlewares.cache.set(req.originalUrl, body);
     return res.status(200).send(body);
   });
   }
