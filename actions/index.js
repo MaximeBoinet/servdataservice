@@ -3,6 +3,7 @@ module.exports = (api) => {
         auth: require('./auth')(api),
         users: require('./users/crud')(api),
         games: require('./games/crud')(api),
-        comment: require('./comment/crud')(api)
+        comment: require('./comment/crud')(api),
+        genres: require('./genre/crud')(api)
     };
 };

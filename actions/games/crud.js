@@ -61,24 +61,29 @@ module.exports = (api) => {
       .then(() => client.query('SELECT * FROM games WHERE user_iduser = $1 AND lended = 1', [req.params.id]))
       .then(resp => res.send(resp.rows))
       .catch(e => res.send(e))
+      .then(() => client.end())
   }
 
   function getGamesFromUser (req, res, next) {
-    if (!req.userId) {
-        return res.status(401).send('not logged in');
-    }
-    api.middlewares.pool.query('SELECT * FROM games WHERE user_iduser = $1', [req.params.id])
+    const client = new Client({
+      connectionString: DATABASE_URL,
+    });
+    client.connect()
+      .then(client.query('SELECT * FROM games WHERE user_iduser = $1', [req.params.id]))
       .then(resp => res.send(resp.rows))
-      .catch(e => setImmediate(() => { throw e }))
+      .catch(e => res.send(e))
+      .then(() => client.end())
   }
 
   function setLend(req, res, next) {
-    if (req.userId == undefined) {
-        return res.status(401).send('not logged in');
-    }
-    api.middlewares.pool.query('UPDATE games SET lended = 1 WHERE idgame = $1 RETURNING *', [req.params.id])
+    const client = new Client({
+      connectionString: DATABASE_URL,
+    });
+    client.connect()
+      .then(client.query('UPDATE games SET lended = 1 WHERE idgame = $1 RETURNING *', [req.params.id]))
       .then(resp => res.send(resp.rows))
-      .catch(e => setImmediate(() => { throw e }))
+      .catch(e => res.send(e))
+      .then(() => client.end())
   }
 
   return {
