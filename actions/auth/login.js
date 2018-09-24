@@ -1,6 +1,5 @@
 const sha1 = require('sha1');
 const jwt = require('jsonwebtoken');
-const Promise = require('promise');
 const http = require('http');
 const { Client } = require('pg');
 const PORT = process.env.PORT || 5000;

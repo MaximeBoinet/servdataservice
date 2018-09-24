@@ -11,9 +11,13 @@ module.exports = (api) => {
     api.middlewares.cache.get,
     api.actions.games.getAllWord);
 
-  router.get('/:id',
+  router.get('/users/:id',
     api.middlewares.ensureAuthenticated.verifyAuth,
     api.actions.games.getGamesFromUser)
+
+  router.get('/:id',
+    api.middlewares.ensureAuthenticated.verifyAuth,
+    api.actions.games.getGameById)
 
   router.get('/lended/:id',
     api.middlewares.ensureAuthenticated.verifyAuth,

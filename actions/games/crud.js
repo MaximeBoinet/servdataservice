@@ -98,12 +98,24 @@ module.exports = (api) => {
 
   }
 
+  function getGameById(req, res, next) {
+    const client = new Client({
+      connectionString: DATABASE_URL,
+    });
+    client.connect()
+      .then(() => client.query('SELECT * FROM games WHERE idgame = $1', [req.params.gameid]))
+      .then((resp) => res.send(resp.rows[0]))
+      .catch((e) => res.send(e))
+      .then(() => client.end())
+  }
+
   return {
     getAllGenre,
     getAllWord,
     getLendedGamesFromUser,
     getGamesFromUser,
     setLend,
-    createGame
+    createGame,
+    getGameById
   }
 }

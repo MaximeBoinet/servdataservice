@@ -45,7 +45,7 @@ module.exports = (api) => {
         .then(() => client.query('DELETE FROM genre'))
         .then(() => client.query('INSERT INTO genre(idapi,name) VALUES' + pref + ' RETURNING *', val))
         .then(resp => {
-          api.middlewares.cache.set(req.originalUrl, resp.rows);
+          api.middlewares.cache.set(req.originalUrl, resp.rows.toString());
           res.send(resp.rows)
         })
         .catch((e) => res.send(e))
