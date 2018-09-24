@@ -100,7 +100,7 @@ module.exports = (api) => {
 
   function getGameById(req, res, next) {
     request({
-    url: baseURL+req.params.gameid,
+    url: (baseURL+(req.params.gameid).toString()),
     method: "GET",
     headers : {
       "user-key" : api.settings.key.api,
