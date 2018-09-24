@@ -15,7 +15,7 @@ module.exports = (api) => {
     api.middlewares.ensureAuthenticated.verifyAuth,
     api.actions.games.getGamesFromUser)
 
-  router.get('/:id',
+  router.get('/:gameid',
     api.middlewares.ensureAuthenticated.verifyAuth,
     api.actions.games.getGameById)
 
