@@ -155,6 +155,7 @@ module.exports = (api) => {
     setLend,
     createGame,
     getGameById,
+    getLenders,
     getPublisher
   }
 }
