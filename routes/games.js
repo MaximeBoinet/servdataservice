@@ -31,5 +31,13 @@ module.exports = (api) => {
     api.middlewares.ensureAuthenticated.verifyAuth,
     api.actions.games.createGame);
 
+  router.get('/users/:id',
+    api.middlewares.ensureAuthenticated.verifyAuth,
+    api.actions.games.getLenders);
+
+  router.get('/publisher/:id',
+    api.middlewares.ensureAuthenticated.verifyAuth,
+    api.actions.games.getPublisher);
+
   return router;
 }

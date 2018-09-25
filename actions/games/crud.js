@@ -5,10 +5,10 @@ const PORT = process.env.PORT || 5000;
 const { DATABASE_URL } = process.env;
 
 module.exports = (api) => {
-  const baseURL = "https://api-endpoint.igdb.com/games/"
+  const baseURL = "https://api-endpoint.igdb.com/"
   function getAllGenre (req, res, next) {
     request({
-    url: baseURL,
+    url: baseURL+"/games",
     method: "GET",
     headers : {
       "user-key" : api.settings.key.api,
@@ -31,7 +31,7 @@ module.exports = (api) => {
 
   function getAllWord (req, res, next) {
     request({
-    url: baseURL,
+    url: baseURL+"/games",
     method: "GET",
     headers : {
       "user-key" : api.settings.key.api,
@@ -99,10 +99,8 @@ module.exports = (api) => {
   }
 
   function getGameById(req, res, next) {
-    const myurl = baseURL+req.params.gameid;
-    console.log(myurl);
     request({
-    url: myurl,
+    url: baseURL+req.params.gameid,
     method: "GET",
     headers : {
       "user-key" : api.settings.key.api,
@@ -119,6 +117,36 @@ module.exports = (api) => {
   });
   }
 
+  function getLenders (req, res, next) {
+    const client = new Client({
+      connectionString: DATABASE_URL,
+    });
+    client.connect()
+      .then(client.query('SELECT iduser,mail,password,phone,city,genre_idgenre FROM myuser AS u ,games AS g,  WHERE g.idigdb = $1 AND u.iduser = g.user_iduser', [req.params.id]))
+      .then(resp => res.send(resp.rows))
+      .catch(e => res.send(e))
+      .then(() => client.end())
+  }
+
+  function getPublisher (req, res, next) {
+    request({
+    url: baseURL+"/companies/"+req.params.id,
+    method: "GET",
+    headers : {
+      "user-key" : api.settings.key.api,
+      "Accept" : 'application/json'
+    },
+    qs: {
+      "fields" : "name"
+    }
+  }, (error, response, body) => {
+  	if (error) {
+      return res.status(500).send("L'appel à l'API à achoué");
+    }
+    return res.status(200).send(body);
+  });
+  }
+
   return {
     getAllGenre,
     getAllWord,
@@ -126,6 +154,7 @@ module.exports = (api) => {
     getGamesFromUser,
     setLend,
     createGame,
-    getGameById
+    getGameById,
+    getPublisher
   }
 }
