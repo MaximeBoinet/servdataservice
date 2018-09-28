@@ -17,7 +17,7 @@ module.exports = (api) => {
 	    client.connect()
 				.then(() => client.query("SELECT * FROM myuser WHERE mail = $1::text AND password = $2::text", [req.body.mail, req.body.password]))
         .then(resp => {
-					if (!resp.rows) {
+					if (!resp.rows[0]) {
 						res.status(403).send('wrong.credential')
 					}
 					console.log(resp.rows[0]);
