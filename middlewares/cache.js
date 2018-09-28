@@ -15,7 +15,6 @@ module.exports = (api) => {
 			console.log("cache sended")
 			return res.send(reply);
 		}
-			client.quit();
     	next()
 		});
 	}
@@ -35,9 +34,9 @@ module.exports = (api) => {
 	function verifyToken(key, callback) {
 		client.get(key, (err, reply) => {
 		if (reply) {
-			return callback(reply);
+			return callback(reply, null);
 		}
-    	return callback();
+    	return callback(null, err);
 		});
 	}
 
