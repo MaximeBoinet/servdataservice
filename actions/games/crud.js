@@ -8,7 +8,7 @@ module.exports = (api) => {
   const baseURL = "https://api-endpoint.igdb.com/"
   function getAllGenre (req, res, next) {
     request({
-    url: baseURL+"/games",
+    url: baseURL+"/games/"+req.params.genre,
     method: "GET",
     headers : {
       "user-key" : api.settings.key.api,
@@ -31,7 +31,7 @@ module.exports = (api) => {
 
   function getAllWord (req, res, next) {
     request({
-    url: baseURL+"/games",
+    url: baseURL+"/games/"+req.params.word,
     method: "GET",
     headers : {
       "user-key" : api.settings.key.api,
@@ -100,7 +100,7 @@ module.exports = (api) => {
 
   function getGameById(req, res, next) {
     request({
-    url: baseURL+req.params.gameid,
+    url: baseURL+"/games/"+req.params.gameid,
     method: "GET",
     headers : {
       "user-key" : api.settings.key.api,
@@ -111,6 +111,7 @@ module.exports = (api) => {
     }
   }, (error, response, body) => {
   	if (error) {
+      console.error(error);
       return res.status(500).send("L'appel à l'API à achoué");
     }
     return res.status(200).send(body);

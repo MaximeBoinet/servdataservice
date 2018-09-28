@@ -15,6 +15,7 @@ module.exports = (api) => {
 			console.log("cache sended")
 			return res.send(reply);
 		}
+			client.quit();
     	next()
 		});
 	}
