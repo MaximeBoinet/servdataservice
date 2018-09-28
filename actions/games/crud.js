@@ -8,7 +8,7 @@ module.exports = (api) => {
   const baseURL = "https://api-endpoint.igdb.com/"
   function getAllGenre (req, res, next) {
     request({
-    url: baseURL+"/games",
+    url: baseURL+"/games/",
     method: "GET",
     headers : {
       "user-key" : api.settings.key.api,
@@ -31,7 +31,7 @@ module.exports = (api) => {
 
   function getAllWord (req, res, next) {
     request({
-    url: baseURL+"/games",
+    url: baseURL+"/games/",
     method: "GET",
     headers : {
       "user-key" : api.settings.key.api,
