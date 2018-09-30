@@ -55,7 +55,7 @@ module.exports = (api) => {
       });
       client.connect()
         .then(() => client.query('SELECT * FROM game WHERE user_iduser = $1', [req.userId]))
-        .then((resp) => res.send(resp.rows))
+        .then(resp => res.send(resp.rows))
         .catch((e) => res.status(500).send(e.stack))
         .then(() => client.end())
     }
