@@ -29,6 +29,7 @@ module.exports = (api) => {
 
   router.post('/',
     api.middlewares.ensureAuthenticated.verifyAuth,
+    api.middlewares.bodyParser.json(),
     api.actions.games.createGame);
 
   router.get('/users/:id',
