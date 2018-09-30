@@ -58,7 +58,7 @@ module.exports = (api) => {
       connectionString: DATABASE_URL,
     });
     client.connect()
-      .then(() => client.query('SELECT * FROM games WHERE user_iduser = $1 AND lended = 1', [req.params.id]))
+      .then(() => client.query('SELECT * FROM game WHERE user_iduser = $1 AND lended = 1', [req.params.id]))
       .then(resp => res.send(resp.rows))
       .catch(e => res.status(500).send(e.stack))
       .then(() => client.end())
@@ -80,7 +80,7 @@ module.exports = (api) => {
       connectionString: DATABASE_URL,
     });
     client.connect()
-      .then(client.query('UPDATE games SET lended = 1 WHERE idgame = $1 RETURNING *', [req.params.id]))
+      .then(client.query('UPDATE game SET lended = 1 WHERE idgame = $1 RETURNING *', [req.params.id]))
       .then(resp => res.send(resp.rows))
       .catch(e => res.status(500).send(e.stack))
       .then(() => client.end())
