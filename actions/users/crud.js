@@ -53,6 +53,7 @@ module.exports = (api) => {
       const client = new Client({
         connectionString: DATABASE_URL,
       });
+      console.log(req.userId);
       client.connect()
         .then(() => client.query('SELECT * FROM game WHERE user_iduser = $1', [req.userId]))
         .then(resp => res.send(resp.rows))
