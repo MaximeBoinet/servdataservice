@@ -54,7 +54,7 @@ module.exports = (api) => {
         connectionString: DATABASE_URL,
       });
       client.connect()
-        .then(() => client.query('SELECT * FROM games WHERE user_iduser = $1', [req.userId]))
+        .then(() => client.query('SELECT * FROM game WHERE user_iduser = $1', [req.userId]))
         .then((resp) => res.send(resp.rows))
         .catch((e) => res.send(e))
         .then(() => client.end())

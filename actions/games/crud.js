@@ -93,7 +93,7 @@ module.exports = (api) => {
     client.connect()
       .then(() => client.query('INSERT INTO game(idigdb, name, description, urlcover, publisher, lended, user_iduser) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *', [req.body.idapi, req.body.name, req.body.description, req.body.urlcover, req.body.publisher, req.body.lended, req.userId]))
       .then(resp => res.send(resp.rows))
-      .catch(e => res.status(500).end(e.stack))
+      .catch(e => res.status(500).send(e.stack))
       .then(() => client.end())
 
   }
