@@ -11,7 +11,12 @@ module.exports = (api) => {
       });
       client.connect()
         .then(() => client.query('SELECT * FROM myuser WHERE iduser = $1', [req.params.userid]))
-        .then(resp => res.send(resp.rows[0]))
+        .then(resp => {
+          if (!resp || !resp.rows) {
+            return res.status(404).send("This user doesn't exist")
+          }
+          res.send(resp.rows[0])
+        })
         .catch((e) => res.status(500).send(e.stack))
         .then(() => client.end())
     }
@@ -22,7 +27,12 @@ module.exports = (api) => {
       });
       client.connect()
         .then(() => client.query('SELECT * FROM myuser WHERE iduser = $1', [req.userId]))
-        .then((resp) => res.send(resp.rows[0]))
+        .then((resp) => {
+          if (!resp || !resp.rows) {
+            return res.status(404).send("No user found with your token id")
+          }
+          res.send(resp.rows[0])
+        })
         .catch((e) => res.status(500).send(e.stack))
         .then(() => client.end())
     }
@@ -33,7 +43,10 @@ module.exports = (api) => {
       });
       client.connect()
         .then(() => client.query('INSERT INTO myuser(mail,password,phone,city,genre_idgenre) VALUES ($1, $2, $3, $4, $5) RETURNING *', [req.body.mail, req.body.password ,req.body.phone ,req.body.city, req.body.genre]))
-        .then(resp => res.send(resp.rows[0]))
+        .then(resp => {
+          if (!resp)
+          res.send(resp.rows[0])
+        })
         .catch((e) => res.status(500).send(e.stack))
         .then(() => client.end())
     }
@@ -44,7 +57,12 @@ module.exports = (api) => {
       });
       client.connect()
         .then(() => client.query('UPDATE myuser SET mail = $1, phone = $2, city = $3, genre_idgenre = $4 WHERE iduser = $5 RETURNING *', [req.body.mail, req.body.phone ,req.body.city, req.body.genre, req.userId]))
-        .then((resp) => res.send(resp.rows[0]))
+        .then((resp) => {
+          if (!resp || !resp.rows) {
+            return res.send
+          }
+          res.send(resp.rows[0])
+        })
         .catch((e) => res.status(500).send(e.stack))
         .then(() => client.end())
     }

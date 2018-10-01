@@ -14,8 +14,13 @@ module.exports = (api) => {
     });
     client.connect()
       .then(() => client.query('SELECT * FROM genre'))
-      .then(resp => res.send(resp.rows))
-      .catch((e) => res.send(e))
+      .then(resp => {
+        if (!resp || !resp.rows) {
+          return res.status(404).send("No kind found")
+        }
+        res.send(resp.rows)
+      })
+      .catch((e) => res.status(500).send(e.stack))
       .then(() => client.end())
   }
 
@@ -40,22 +45,23 @@ module.exports = (api) => {
       });
       const jsbody = JSON.parse(body)
       val = []
-      buildSentence(0, jsbody);
-      client.connect()
-        .then(() => client.query('DELETE FROM genre'))
-        .then(() => client.query('INSERT INTO genre(idapi,name) VALUES' + pref + ' RETURNING *', val))
-        .then(resp => {
-          api.middlewares.cache.set(req.originalUrl, resp.rows.toString());
-          res.send(resp.rows)
-        })
-        .catch((e) => res.send(e))
-        .then(() => client.end())
-    });
+      buildSentence(0, jsbody,() => {
+        client.connect()
+          .then(() => client.query('DELETE FROM genre'))
+          .then(() => client.query('INSERT INTO genre(idapi,name) VALUES' + pref + ' RETURNING *', val))
+          .then(resp => {
+            api.middlewares.cache.set(req.originalUrl, resp.rows.toString());
+            res.send(resp.rows)
+          })
+          .catch((e) => res.send(e.stack))
+          .then(() => client.end())
+      });
+    }
   }
 
-  function buildSentence(index, tab) {
+  function buildSentence(index, tab, callback) {
     if(tab.length <= index) {
-      return
+      return callback();
     }
     if(index > 0) {
       pref += ','

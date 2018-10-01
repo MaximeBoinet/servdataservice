@@ -18,13 +18,13 @@ module.exports = (api) => {
 				.then(() => client.query("SELECT * FROM myuser WHERE mail = $1::text AND password = $2::text", [req.body.mail, req.body.password]))
         .then(resp => {
 					if (!resp.rows[0]) {
-						res.status(403).send('wrong.credential')
+						return res.status(403).send('wrong.credential')
 					}
 					console.log(resp.rows[0]);
 
 					createToken(resp.rows[0], req, res, next)
 				})
-        .catch(e => res.send(e))
+        .catch(e => res.status(500).send(e.stack))
 				.then(() => client.end())
 		}
 	};
@@ -44,7 +44,7 @@ module.exports = (api) => {
 				},
 				api.settings.security.salt, {}, (err, encryptedToken) => {
 					if (err) {
-						return res.status(500).send(err);
+						return res.status(500).send(err.stack);
 					}
 					req.userId = user.iduser;
 					return res.send(encryptedToken);

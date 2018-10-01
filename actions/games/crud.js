@@ -59,7 +59,12 @@ module.exports = (api) => {
     });
     client.connect()
       .then(() => client.query('SELECT * FROM game WHERE user_iduser = $1 AND lended = 1', [req.params.id]))
-      .then(resp => res.send(resp.rows))
+      .then(resp => {
+        if (!resp || ! resp.rows) {
+          return res.send("nothing found")
+        }
+        res.send(resp.rows)
+      })
       .catch(e => res.status(500).send(e.stack))
       .then(() => client.end())
   }
@@ -70,7 +75,12 @@ module.exports = (api) => {
     });
     client.connect()
       .then(client.query('SELECT * FROM game WHERE user_iduser = $1', [req.params.id]))
-      .then(resp => res.send(resp.rows))
+      .then(resp => {
+        if (!resp || !resp.rows) {
+          return res.send("nothing found")
+        }
+        res.send(resp.rows)
+      })
       .catch(e => res.status(500).send(e.stack))
       .then(() => client.end())
   }
@@ -81,7 +91,12 @@ module.exports = (api) => {
     });
     client.connect()
       .then(client.query('UPDATE game SET lended = 1 WHERE idgame = $1 RETURNING *', [req.params.id]))
-      .then(resp => res.send(resp.rows))
+      .then(resp => {
+        if (!resp || !resp.rows) {
+          return res.send("This game doesn't exist")
+        }
+        res.send(resp.rows)
+      })
       .catch(e => res.status(500).send(e.stack))
       .then(() => client.end())
   }
@@ -124,7 +139,12 @@ module.exports = (api) => {
     });
     client.connect()
       .then(client.query('SELECT iduser,mail,password,phone,city,genre_idgenre FROM myuser AS u ,games AS g,  WHERE g.idigdb = $1 AND u.iduser = g.user_iduser', [req.params.id]))
-      .then(resp => res.send(resp.rows))
+      .then(resp => {
+        if (!resp || !resp.rows) {
+          return res.status(404).send("No users found")
+        }
+        res.send(resp.rows)
+      })
       .catch(e => res.status(500).send(e.stack))
       .then(() => client.end())
   }
