@@ -45,7 +45,7 @@ module.exports = (api) => {
       });
       const jsbody = JSON.parse(body)
       val = []
-      buildSentence(0, jsbody,() => {
+      buildSentence(0, jsbody, () => {
         client.connect()
           .then(() => client.query('DELETE FROM genre'))
           .then(() => client.query('INSERT INTO genre(idapi,name) VALUES' + pref + ' RETURNING *', val))
@@ -56,7 +56,7 @@ module.exports = (api) => {
           .catch((e) => res.send(e.stack))
           .then(() => client.end())
       });
-    }
+    })
   }
 
   function buildSentence(index, tab, callback) {

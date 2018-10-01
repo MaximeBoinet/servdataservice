@@ -12,7 +12,7 @@ module.exports = (api) => {
     client.connect()
       .then(() => client.query('INSERT INTO comment(mark, review, user_iduser) VALUES ($1, $2, $3) RETURNING *', [req.body.mark, req.body.review, req.body.iduser]))
       .then((resp) => res.send(resp.rows[0]))
-      .catch((e) => res.status(500).send(e.stack∑))
+      .catch((e) => res.status(500).send(e.stack))
       .then(() => client.end())
   }
 
